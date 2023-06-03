@@ -6,5 +6,9 @@ namespace TaskManagementPlatform2.Models
     {
         [Key]
         public int TeamId { get; set; }
+
+        public string Name { get; set; }
+
+        public virtual ICollection<Project> Projects { get; set; }
     }
 }

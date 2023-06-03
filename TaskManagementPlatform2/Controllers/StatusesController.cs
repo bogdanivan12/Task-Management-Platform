@@ -68,8 +68,8 @@ namespace TaskManagementPlatform2.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Status stasus = db.Statuses.Find(id);
-            db.Statuses.Remove(stasus);
+            Status status = db.Statuses.Find(id);
+            db.Statuses.Remove(status);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
