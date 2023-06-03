@@ -1,0 +1,13 @@
+﻿<h2>Formular adaugare status</h2>
+
+<form method="post" action="/Statuses/Edit/@ViewBag.Status.StatusId">
+    <label>Nume</label>
+    <br />
+    <input type="text" name="Name" value="@ViewBag.Status.Name" />
+    <br /><br />
+    <label>Culoare</label>
+    <br />
+    <input type="color" name="Color" value="@ViewBag.Status.Color"/>
+    <br /><br />
+    <button type="submit">Modifica status</button>
+</form>

@@ -1,0 +1,9 @@
+﻿<h2>Formular editare echipa</h2>
+
+<form method="post" action="/Teams/Edit/@ViewBag.Team.TeamId">
+    <label>Nume</label>
+    <br />
+    <input type="text" name="Name" value="@ViewBag.Team.Name"/>
+    <br /><br />
+    <button type="submit">Modifica echipa</button>
+</form>
