@@ -12,7 +12,10 @@
 {
     <p>@status.Name</p>
     <button class="btn" style="background-color:@status.Color"></button>
-    <a href="/Statuses/Show/@status.StatusId">Vizualizare status</a>
+    <a class="btn" href="/Statuses/Edit/@status.StatusId">Editare</a>
+    <form method="post" action="/Statuses/Delete/@status.StatusId">
+        <button class="btn" type="submit">Stergere</button>    
+    </form>
     <br />
     <hr />
     <br />
