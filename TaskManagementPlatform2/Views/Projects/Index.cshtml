@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Lista proiecte";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+
+<br />
+<br />
+
+@foreach (var project in ViewBag.Projects)
+{
+    <p>@project.Name</p>
+    <p>@project.Description</p>
+    <p>@project.Date</p>
+    <p>@project.Deadline</p>
+    <a href="/Projects/Show/@project.ProjectId">Vizualizare proiect</a>
+    <br />
+    <hr />
+    <br />
+}
+<br />
+<a class="btn btn-success" href="/Projects/New">Adauga un nou proiect</a>
+<br />

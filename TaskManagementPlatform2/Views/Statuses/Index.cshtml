@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Lista statusuri";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+
+<br />
+<br />
+
+@foreach (var status in ViewBag.Statuses)
+{
+    <p>@status.Name</p>
+    <button class="btn" style="background-color:@status.Color"></button>
+    <a href="/Statuses/Show/@status.StatusId">Vizualizare status</a>
+    <br />
+    <hr />
+    <br />
+}
+<br />
+<a class="btn btn-success" href="/Statuses/New">Adauga un nou status</a>
+<br />
