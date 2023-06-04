@@ -7,6 +7,7 @@ namespace TaskManagementPlatform2.Models
         [Key]
         public int TaskId { get; set; }
 
+        [Required(ErrorMessage = "Numele task-ului este obligatoriu")]
         public string Name { get; set; }
 
         public string? Description { get; set; }
@@ -19,14 +20,16 @@ namespace TaskManagementPlatform2.Models
 
         public virtual Project Project { get; set; }
 
+        [Required(ErrorMessage = "Statusul este obligatoriu")]
         public int StatusId { get; set; }
 
         public virtual Status Status { get; set; }
 
         public virtual ICollection<Comment>? Comments { get; set; }
 
+        public string? UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
-        public virtual ICollection<ApplicationUser>? Members { get; set; }
+        public virtual ICollection<TeamMember>? Members { get; set; }
     }
 }

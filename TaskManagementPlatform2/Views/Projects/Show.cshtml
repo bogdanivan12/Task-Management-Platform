@@ -65,13 +65,13 @@
             <div class="col-md-8">
 
                 <div>
-                    <p>@task.Name</p>
+                    <a href="/Tasks/Show/@task.TaskId" class="btn">@task.Name</a>
                     <p>@task.Description</p>
                     @foreach (var status in ViewBag.Statuses)
                     {
                         @if (status.StatusId == task.StatusId)
                         {
-                            <p>@status.Name</p>
+                            <button class="btn" style="background-color:@status.Color">@status.Name</button>
                         }
                     }
                     <small>@task.Date</small>

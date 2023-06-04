@@ -2,29 +2,26 @@
     ViewBag.Title = "Vizualizare echipa";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>@ViewBag.Team.Name</h2>
+
+<a class="btn btn-warning" href="/Teams/Edit/@ViewBag.Team.TeamId">Editare</a>
+<form method="post" action="/Teams/Delete/@ViewBag.Team.TeamId">
+    <button class="btn btn-danger" type="submit">Stergere</button>
+</form>
 <br />
 
 <br />
 <br />
 
-<p>@ViewBag.Team.Name</p>
-@if (ViewBag.Team.Projects != null)
+@if (ViewBag.Projects != null)
 {
-
-    @foreach (var project in ViewBag.Team.Projects)
+    @foreach (var project in ViewBag.Projects)
     {
-        <p>@project.Name</p>
+        <p><b>@project.Name</b></p>
         <p>@project.Description</p>
-        <a href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
+        <a class="btn btn-primary" href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
         <br />
         <hr />
         <br />
     }
-
 }
-
-<a class="btn" href="/Teams/Edit/@ViewBag.Team.TeamId">Editare</a>
-<form method="post" action="/Teams/Delete/@ViewBag.Team.TeamId">
-    <button class="btn" type="submit">Stergere</button>
-</form>

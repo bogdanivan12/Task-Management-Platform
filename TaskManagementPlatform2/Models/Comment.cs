@@ -7,6 +7,7 @@ namespace TaskManagementPlatform2.Models
         [Key]
         public int CommentId { get; set; }
 
+        [Required(ErrorMessage = "Continutul comentariului este obligatoriu")]
         public string Content { get; set; }
 
         public DateTime Date { get; set; }
@@ -14,6 +15,8 @@ namespace TaskManagementPlatform2.Models
         public int TaskId { get; set; }
 
         public virtual Task Task { get; set; }
+
+        public string? UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 

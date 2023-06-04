@@ -12,9 +12,8 @@
 <br />
 
 <form method="post" action="/Projects/New">
-
     <label>Titlu Proiect</label>
-    <input type="text" name="Name" />
+    <input type="text" name="Name" required/>
     <br />
     <br />
 
@@ -37,7 +36,7 @@
     Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
     *@
 
-    <select name="TeamId">
+    <select name="TeamId" required>
 
         @foreach (var item in ViewBag.Teams)
         {

@@ -10,6 +10,7 @@ namespace TaskManagementPlatform2.Models
 
         public string? Description { get; set; }
 
+        [Required(ErrorMessage = "Numele proiectului este obligatoriu")]
         public string Name { get; set; }
 
         public DateTime Date { get; set; }
@@ -18,10 +19,12 @@ namespace TaskManagementPlatform2.Models
 
         public virtual ICollection<Task>? Tasks { get; set; }
 
+        [Required(ErrorMessage = "Este obligatoriu sa selectati o echipa")]
         public int TeamId { get; set; }
 
         public virtual Team Team { get; set; }
 
+        public string? UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

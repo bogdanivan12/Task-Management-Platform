@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementPlatform2.Data;
 using TaskManagementPlatform2.Models;
@@ -8,17 +10,34 @@ namespace TaskManagementPlatform2.Controllers
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext db;
-        public ProjectsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public ProjectsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
         {
-            var projects = from project in db.Projects
-                           orderby project.Deadline
-                           select project;
-            ViewBag.Projects = projects;
+            if (User.IsInRole("Admin"))
+            {
+                var projects = from project in db.Projects
+                               orderby project.Deadline
+                               select project;
+
+                ViewBag.Projects = projects;
+            }
+            else
+            {
+                var projects = from project in db.Projects
+                               orderby project.Deadline
+                               where project.UserId == _userManager.GetUserId(User)
+                               select project;
+
+                ViewBag.Projects = projects;
+            }
             return View();
         }
 
@@ -45,6 +64,7 @@ namespace TaskManagementPlatform2.Controllers
         public IActionResult New()
         {
             var teams = from team in db.Teams
+                        orderby team.Name
                         select team;
 
             ViewBag.Teams = teams;
@@ -56,6 +76,7 @@ namespace TaskManagementPlatform2.Controllers
         [HttpPost]
         public IActionResult New(Project project)
         {
+            project.UserId = _userManager.GetUserId(User);
             try
             {
                 db.Projects.Add(project);
@@ -65,7 +86,7 @@ namespace TaskManagementPlatform2.Controllers
 
             catch (Exception)
             {
-                return View();
+                return RedirectToAction("New");
             }
         }
 
@@ -74,6 +95,11 @@ namespace TaskManagementPlatform2.Controllers
             Project project = db.Projects.Include("Team")
                                          .Where(proj => proj.ProjectId == id)
                                          .First();
+
+            if (!User.IsInRole("Admin") && project.UserId != _userManager.GetUserId(User))
+            {
+                return Redirect("/Identity/Account/AccessDenied");
+            }
 
             ViewBag.Project = project;
             ViewBag.Team = project.Team;
