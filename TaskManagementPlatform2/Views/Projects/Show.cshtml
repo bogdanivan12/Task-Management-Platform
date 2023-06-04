@@ -1,0 +1,174 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@* Afisarea unui proiect*@
+<div class="d-flex justify-content-center">
+
+    <a class="btn btn-outline-success" href="/Projects/Index/">Afisare Proiecte</a>
+
+    <a class="btn btn-outline-success" href="/Projects/New">Adauga proiect</a>
+
+</div>
+
+<br />
+
+<div class="card">
+
+    <div class="card-body">
+
+        <h3 class="card-title alert-success py-3 px-3 rounded-2">@ViewBag.Project.Name</h3>
+
+        <div class="card-text">@ViewBag.Project.Description</div>
+
+        <div class="d-flex justify-content-between flex-row mt-5">
+
+            @*<div><i class="bi bi-globe"></i> @ViewBag.Category.CategoryName</div>*@
+
+            <span class="alert-success">@ViewBag.Project.Date</span>
+            <span class="alert-success">@ViewBag.Project.Deadline</span>
+
+        </div>
+
+    </div>
+
+    <hr />
+
+    <div class="d-flex flex-row justify-content-between">
+
+
+
+        <a class="btn btn-success" href="/Projects/Edit/@ViewBag.Project.ProjectId">Editeaza proiect</a>
+
+        <form method="post" action="/Projects/Delete/@ViewBag.Project.ProjectId">
+
+            <button class="btn btn-danger" type="submit">Sterge proiect</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<br />
+<br />
+
+@* Afisare task uri impreuna cu butoanele de editare si stergere *@
+
+@foreach (var task in ViewBag.Project.Tasks)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8">
+
+                <div>
+                    <p>@task.Name</p>
+                    <p>@task.Description</p>
+                    @foreach (var status in ViewBag.Statuses)
+                    {
+                        @if (status.StatusId == task.StatusId)
+                        {
+                            <p>@status.Name</p>
+                        }
+                    }
+                    <small>@task.Date</small>
+                    <small>@task.Deadline</small>
+                </div>
+                <br>
+
+                <div class="d-flex">
+
+                    <div>
+
+                        <a class="btn btn-outline-primary" href="/Tasks/Edit/@task.TaskId"><i class="bi bi-pencil-square"></i>Editeaza</a>
+
+                    </div>
+
+                    <div>
+
+                        <form method="post" action="/Tasks/Delete/@task.TaskId">
+
+                            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <br />
+
+            </div>
+
+            <div class="col-md-2"></div>
+
+        </div>
+
+    </div>
+}
+
+@* Afisarea formularului in care se poate adauga un task *@
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+
+            <div class="card">
+
+                <form method="post" action="/Tasks/New">
+
+                    <div class="card-body">
+
+                        <input type="hidden" name="ProjectId" value="@ViewBag.Project.ProjectId" />
+
+                        <label>Nume task</label>
+                        <br />
+
+                        <textarea class="form-control" name="Name"></textarea>
+                        <br />
+
+                        <label>Continut task</label>
+                        <br />
+
+                        <textarea class="form-control" name="Description"></textarea>
+                        <br />
+                        <label>Selectati status</label>
+
+                        @*
+                        Proprietatea name primeste valoarea CategoryId, si anume id-ul categoriei, fiind atributul care
+                        se paseaza catre Controller prin post
+                        Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
+                        *@
+
+                        <select name="StatusId">
+
+                            @foreach (var item in ViewBag.Statuses)
+                            {
+                                <option value="@item.StatusId">@item.Name</option>
+                            }
+
+                        </select>
+                        <br />
+
+                        <button class="btn btn-success " type="submit">Adauga taskul</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2"></div>
+
+    </div>
+
+</div>

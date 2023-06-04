@@ -9,6 +9,10 @@ namespace TaskManagementPlatform2.Models
 
         public string Name { get; set; }
 
-        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Project>? Projects { get; set; }
+
+        public virtual ApplicationUser User { get; set; }
+
+        public virtual ICollection<ApplicationUser>? Members { get; set; }
     }
 }

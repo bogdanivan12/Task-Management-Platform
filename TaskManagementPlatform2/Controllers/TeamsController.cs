@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementPlatform2.Data;
 using TaskManagementPlatform2.Models;
 
@@ -7,10 +9,16 @@ namespace TaskManagementPlatform2.Controllers
     public class TeamsController : Controller
     {
         private readonly ApplicationDbContext db;
-        public TeamsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public TeamsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
+
+        [Authorize(Roles ="Admin")]
         public IActionResult Index()
         {
             var teams = from team in db.Teams

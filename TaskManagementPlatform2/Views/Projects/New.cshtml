@@ -1,0 +1,51 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Adaugare Proiect</h2>
+<br />
+
+<form method="post" action="/Projects/New">
+
+    <label>Titlu Proiect</label>
+    <input type="text" name="Name" />
+    <br />
+    <br />
+
+    <label>Descriere Proiect</label>
+    <textarea name="Description"></textarea>
+    <br />
+    <br />
+
+    <input type="hidden" name="Date" value="@DateTime.Now" />
+    <br />
+
+    <input type="hidden" name="Deadline" value="@DateTime.Now" />
+    <br />
+
+    <label>Selectati echipa</label>
+
+    @*
+    Proprietatea name primeste valoarea CategoryId, si anume id-ul categoriei, fiind atributul care
+    se paseaza catre Controller prin post
+    Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
+    *@
+
+    <select name="TeamId">
+
+        @foreach (var item in ViewBag.Teams)
+        {
+            <option value="@item.TeamId">@item.Name</option>
+        }
+
+    </select>
+    <br />
+    <button class="btn btn-success" type="submit">Adauga Proiect</button>
+
+</form>

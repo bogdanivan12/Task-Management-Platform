@@ -16,5 +16,7 @@ namespace TaskManagementPlatform2.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
+
     }
 }

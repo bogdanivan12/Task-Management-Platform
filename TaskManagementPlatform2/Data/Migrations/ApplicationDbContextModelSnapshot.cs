@@ -86,6 +86,10 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -137,6 +141,10 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -242,9 +250,14 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -260,11 +273,10 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -274,9 +286,14 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("ProjectId");
 
                     b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -297,7 +314,12 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("StatusId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Statuses");
                 });
@@ -313,10 +335,13 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -326,15 +351,16 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("TaskId");
 
                     b.HasIndex("ProjectId");
 
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
                 });
@@ -351,9 +377,31 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("TeamId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("TaskManagementPlatform2.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -415,7 +463,13 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Task");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.Project", b =>
@@ -426,7 +480,22 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Team");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManagementPlatform2.Models.Status", b =>
+                {
+                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.Task", b =>
@@ -443,9 +512,35 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Project");
 
                     b.Navigation("Status");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManagementPlatform2.Models.Team", b =>
+                {
+                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManagementPlatform2.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("TaskManagementPlatform2.Models.Task", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TaskId");
+
+                    b.HasOne("TaskManagementPlatform2.Models.Team", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.Project", b =>
@@ -456,10 +551,14 @@ namespace TaskManagementPlatform2.Data.Migrations
             modelBuilder.Entity("TaskManagementPlatform2.Models.Task", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.Team", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagementPlatform2.Data;
+using TaskManagementPlatform2.Models;
 
 namespace TaskManagementPlatform2.Controllers
 {
@@ -10,9 +11,24 @@ namespace TaskManagementPlatform2.Controllers
         {
             db = context;
         }
-        public IActionResult Index()
+
+        [HttpPost]
+        public IActionResult New(Models.Task task)
         {
-            return View();
+            task.Date = DateTime.Now;
+            task.Deadline = DateTime.Now;
+
+            try
+            {
+                db.Tasks.Add(task);
+                db.SaveChanges();
+                return Redirect("/Projects/Show/" + task.ProjectId);
+            }
+            catch (Exception)
+            {
+                return Redirect("/Projects/Show/" + task.ProjectId);
+            }
+
         }
     }
 }

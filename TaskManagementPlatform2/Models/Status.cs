@@ -10,5 +10,7 @@ namespace TaskManagementPlatform2.Models
         public string Name { get; set; }
 
         public string Color { get; set; }
+
+        public virtual ApplicationUser User { get; set; }
     }
 }
