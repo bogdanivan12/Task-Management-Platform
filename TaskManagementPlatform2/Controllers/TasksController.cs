@@ -94,6 +94,23 @@ namespace TaskManagementPlatform2.Controllers
 
             ViewBag.Status = task.Status;
 
+            var users = from t in db.Tasks
+                        join p in db.Projects on t.ProjectId equals p.ProjectId
+                        join team in db.Teams on p.TeamId equals team.TeamId
+                        join teamMember in db.TeamMembers on team.TeamId equals teamMember.TeamId
+                        join user in db.Users on teamMember.UserId equals user.Id
+                        where t.TaskId == id
+                        orderby user.UserName
+                        select user;
+            ViewBag.Users = users;
+
+            var members = from t in db.Tasks
+                          join tm in db.TaskMembers on t.TaskId equals tm.TaskId
+                          where t.TaskId == id
+                          select tm.User;
+            ViewBag.Members = members.Distinct();
+
+
             //ViewBag.Task = project.Tasks;
 
             // ViewBag.Category(ViewBag.UnNume) = article.Category (proprietatea Category);

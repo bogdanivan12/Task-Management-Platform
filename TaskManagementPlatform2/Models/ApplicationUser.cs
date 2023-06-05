@@ -14,6 +14,5 @@ namespace TaskManagementPlatform2.Models
         public virtual ICollection<Comment>? Comments { get; set; }
 
         public virtual ICollection<Status>? Statuses { get; set; }
-
     }
 }

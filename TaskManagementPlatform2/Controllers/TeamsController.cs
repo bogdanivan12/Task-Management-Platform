@@ -52,12 +52,24 @@ namespace TaskManagementPlatform2.Controllers
         {
             Team team = db.Teams.Find(id);
             ViewBag.Team = team;
+            ViewBag.TeamId = team.TeamId;
 
             var projects = from project in db.Projects
                            orderby project.Name
                            where project.TeamId == id
                            select project;
             ViewBag.Projects = projects;
+
+            var users = from user in db.Users
+                        orderby user.UserName
+                        select user;
+            ViewBag.Users = users;
+
+            var members = from t in db.Teams
+                          join tm in db.TeamMembers on t.TeamId equals tm.TeamId
+                          where t.TeamId == id
+                          select tm.User;
+            ViewBag.Members = members.Distinct();
             return View();
         }
 

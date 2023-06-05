@@ -2,15 +2,15 @@
 
 namespace TaskManagementPlatform2.Models
 {
-    [PrimaryKey(nameof(UserId), nameof(TeamId))]
-    public class TeamMember
+    [PrimaryKey(nameof(UserId), nameof(TaskId))]
+    public class TaskMember
     {
         public string? UserId { get; set; }
 
-        public int? TeamId { get; set; }
+        public int? TaskId { get; set; }
 
         public virtual ApplicationUser? User { get; set; }
 
-        public virtual Team? Team { get; set; }
+        public virtual Task? Team { get; set; }
     }
 }

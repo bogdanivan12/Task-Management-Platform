@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementPlatform2.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementPlatform2.Data;
 namespace TaskManagementPlatform2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230604212932_SperSaMearga2")]
+    partial class SperSaMearga2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,7 +250,7 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TaskId")
+                    b.Property<int>("TaskId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -283,8 +286,7 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TeamId")
-                        .IsRequired()
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -346,11 +348,10 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusId")
-                        .IsRequired()
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -365,21 +366,6 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("TaskManagementPlatform2.Models.TaskMember", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("TaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "TaskId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskMembers");
                 });
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.Team", b =>
@@ -406,20 +392,28 @@ namespace TaskManagementPlatform2.Data.Migrations
 
             modelBuilder.Entity("TaskManagementPlatform2.Models.TeamMember", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("TeamId")
+                    b.Property<int>("TeamMemberId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamMemberId"));
 
                     b.Property<int?>("TaskId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "TeamId");
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TeamMemberId");
 
                     b.HasIndex("TaskId");
 
                     b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TeamMembers");
                 });
@@ -486,7 +480,9 @@ namespace TaskManagementPlatform2.Data.Migrations
                 {
                     b.HasOne("TaskManagementPlatform2.Models.Task", "Task")
                         .WithMany("Comments")
-                        .HasForeignKey("TaskId");
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
                         .WithMany("Comments")
@@ -527,7 +523,9 @@ namespace TaskManagementPlatform2.Data.Migrations
                 {
                     b.HasOne("TaskManagementPlatform2.Models.Project", "Project")
                         .WithMany("Tasks")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TaskManagementPlatform2.Models.Status", "Status")
                         .WithMany()
@@ -542,25 +540,6 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Status");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskManagementPlatform2.Models.TaskMember", b =>
-                {
-                    b.HasOne("TaskManagementPlatform2.Models.Task", "Team")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
 
                     b.Navigation("User");
                 });
@@ -582,15 +561,11 @@ namespace TaskManagementPlatform2.Data.Migrations
 
                     b.HasOne("TaskManagementPlatform2.Models.Team", "Team")
                         .WithMany("Members")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeamId");
 
                     b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Members")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Team");
 
@@ -619,6 +594,8 @@ namespace TaskManagementPlatform2.Data.Migrations
             modelBuilder.Entity("TaskManagementPlatform2.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Members");
 
                     b.Navigation("Projects");
 

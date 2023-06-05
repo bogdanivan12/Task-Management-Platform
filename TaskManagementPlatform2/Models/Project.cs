@@ -20,11 +20,11 @@ namespace TaskManagementPlatform2.Models
         public virtual ICollection<Task>? Tasks { get; set; }
 
         [Required(ErrorMessage = "Este obligatoriu sa selectati o echipa")]
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
 
-        public virtual Team Team { get; set; }
+        public virtual Team? Team { get; set; }
 
         public string? UserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
     }
 }

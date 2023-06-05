@@ -98,6 +98,61 @@
 
 </div>
 
+
+<form method="post" action="/TaskMembers/New">
+
+    <div class="card-body">
+
+        <input type="hidden" name="TaskId" value="@ViewBag.Task.TaskId" />
+
+        <label>Selectare membru</label>
+
+        @*
+        Proprietatea name primeste valoarea CategoryId, si anume id-ul categoriei, fiind atributul care
+        se paseaza catre Controller prin post
+        Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
+        *@
+
+        <select name="UserId">
+
+            @foreach (var item in ViewBag.Users)
+            {
+                <option value="@item.Id">@item.UserName</option>
+
+            }
+
+        </select>
+        <br />
+
+        <button class="btn btn-success " type="submit">Adauga membrul</button>
+
+    </div>
+
+</form>
+
+
+<br />
+
+<br />
+<br />
+
+@if (ViewBag.Members != null)
+{
+    @foreach (var member in ViewBag.Members)
+    {
+        <p><b>@member.UserName</b></p>
+
+
+        <form method="post" action="/TaskMembers/Delete/?taskId=@ViewBag.Task.TaskId&userId=@member.Id">
+            <button class="btn btn-danger" type="submit">Stergere</button>
+        </form>
+        <br />
+        <hr />
+        <br />
+    }
+}
+
+
 @foreach (var comm in ViewBag.Task.Comments)
 {
     <div class="container">

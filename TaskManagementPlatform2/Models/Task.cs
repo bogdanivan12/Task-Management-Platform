@@ -16,19 +16,19 @@ namespace TaskManagementPlatform2.Models
 
         public DateTime? Deadline { get; set; }
 
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
 
-        public virtual Project Project { get; set; }
+        public virtual Project? Project { get; set; }
 
         [Required(ErrorMessage = "Statusul este obligatoriu")]
-        public int StatusId { get; set; }
+        public int? StatusId { get; set; }
 
-        public virtual Status Status { get; set; }
+        public virtual Status? Status { get; set; }
 
         public virtual ICollection<Comment>? Comments { get; set; }
 
         public string? UserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
 
         public virtual ICollection<TeamMember>? Members { get; set; }
     }

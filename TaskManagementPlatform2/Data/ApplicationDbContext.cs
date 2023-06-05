@@ -17,6 +17,7 @@ namespace TaskManagementPlatform2.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
-
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TaskMember> TaskMembers { get; set; }
     }
 }

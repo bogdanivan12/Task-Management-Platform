@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementPlatform2.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementPlatform2.Data;
 namespace TaskManagementPlatform2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230604222524_SperSaMearga3")]
+    partial class SperSaMearga3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -367,21 +370,6 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("TaskManagementPlatform2.Models.TaskMember", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("TaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "TaskId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskMembers");
-                });
-
             modelBuilder.Entity("TaskManagementPlatform2.Models.Team", b =>
                 {
                     b.Property<int>("TeamId")
@@ -546,25 +534,6 @@ namespace TaskManagementPlatform2.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TaskManagementPlatform2.Models.TaskMember", b =>
-                {
-                    b.HasOne("TaskManagementPlatform2.Models.Task", "Team")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TaskManagementPlatform2.Models.Team", b =>
                 {
                     b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
@@ -587,7 +556,7 @@ namespace TaskManagementPlatform2.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TaskManagementPlatform2.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Members")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -619,6 +588,8 @@ namespace TaskManagementPlatform2.Data.Migrations
             modelBuilder.Entity("TaskManagementPlatform2.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Members");
 
                     b.Navigation("Projects");
 
