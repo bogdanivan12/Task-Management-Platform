@@ -12,19 +12,32 @@
 <br />
 
 <form method="post" action="/Tasks/Edit/@ViewBag.Task.TaskId">
+    @if (ViewBag.Task.UserId == ViewBag.AppUserId || User.IsInRole("Admin"))
+    {
+        <label>Titlu Task</label>
+        <br />
 
-    <label>Titlu Task</label>
-    <br />
+        <textarea name="Name" required>@ViewBag.Task.Name</textarea>
+        <br />
 
-    <textarea name="Name">@ViewBag.Task.Name</textarea>
-    <br />
+        <label>Continut Task</label>
+        <br />
 
-    <label>Continut Task</label>
-    <br />
+        <textarea name="Description" required>@ViewBag.Task.Description</textarea>
+        <br />
 
-    <textarea name="Description">@ViewBag.Task.Description</textarea>
-    <br />
+        <label>Deadline Task</label>
+        <input type="date" name="Deadline" min="2023-06-07" max="2030-01-01" required>
 
+    }
+    else
+    {
+        <textarea name="Name" required hidden>@ViewBag.Task.Name</textarea>
+        <textarea name="Description" required hidden>@ViewBag.Task.Description</textarea>
+        <textarea name="Deadline" required hidden>@ViewBag.Task.Deadline</textarea>
+    }
+
+    <label>Status</label>
     <select name="StatusId">
 
         @foreach (var status in ViewBag.Statuses)
@@ -42,7 +55,5 @@
         }
 
     </select>
-
     <button class="btn  btn-primary" type="submit">Editeaza taskul</button>
-
 </form>

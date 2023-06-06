@@ -1,77 +1,177 @@
 ﻿@{
     ViewBag.Title = "Vizualizare echipa";
 }
+<style>
+    .membr {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
 
-<h2>@ViewBag.Team.Name</h2>
+    .proj {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
 
-<a class="btn btn-warning" href="/Teams/Edit/@ViewBag.Team.TeamId">Editare</a>
-<form method="post" action="/Teams/Delete/@ViewBag.Team.TeamId">
-    <button class="btn btn-danger" type="submit">Stergere</button>
-</form>
+
+    .membr_proj {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .card {
+        margin: auto;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        height: 150px;
+        width: 300px;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .container {
+        padding: 2px 30px;
+    }
+
+    .title {
+        grid-column: 1/3;
+    }
+</style>
+<div class="d-flex justify-content-center">
+
+    <a class="btn btn-outline-success" href="/Teams/Index/">Afisare Echipe</a>
+
+</div>
 
 
-<form method="post" action="/TeamMembers/New">
-
-    <div class="card-body">
-
-        <input type="hidden" name="TeamId" value="@ViewBag.Team.TeamId" />
-
-        <label>Selectare membru</label>
-
-        @*
-        Proprietatea name primeste valoarea CategoryId, si anume id-ul categoriei, fiind atributul care
-        se paseaza catre Controller prin post
-        Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
-        *@
-
-        <select name="UserId">
-
-            @foreach (var item in ViewBag.Users)
-            {
-                <option value="@item.Id">@item.UserName</option>
-
-            }
-
-        </select>
-        <br />
-
-        <button class="btn btn-success " type="submit">Adauga membrul</button>
+<div class="card-team text-center">
+    <div>
+        <h2 class="title">@ViewBag.Team.Name</h2>
+        @if (ViewBag.Team.UserId == ViewBag.AppUserId || User.IsInRole("Admin"))
+        {
+            <div class="d-flex flex-row justify-content-between">
+                <a class="btn btn-warning" href="/Teams/Edit/@ViewBag.Team.TeamId">Editare</a>
+                <a class="btn btn-success" href="/Projects/New">Adauga Proiect</a>
+                <div>
+                    <form method="post" action="/Teams/Delete/@ViewBag.Team.TeamId">
+                        <button class="btn btn-danger" type="submit">Stergere</button>
+                    </form>
+                </div>
+            </div>
+        }
 
     </div>
 
-</form>
 
-
-<br />
-
+</div>
 <br />
 <br />
 
-@if (ViewBag.Members != null)
+
+@if (ViewBag.Team.UserId == ViewBag.AppUserId || User.IsInRole("Admin"))
 {
-    @foreach (var member in ViewBag.Members)
-    {
+    <div class="membru_nou">
+        <form method="post" action="/TeamMembers/New">
+
+            <div class="card-body">
+
+                <input type="hidden" name="TeamId" value="@ViewBag.Team.TeamId" />
+
+                <label>Selectare membru</label>
+
+                @*
+                Proprietatea name primeste valoarea CategoryId, si anume id-ul categoriei, fiind atributul care
+                se paseaza catre Controller prin post
+                Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
+                *@
+
+                <select name="UserId">
+
+                    @foreach (var item in ViewBag.Users)
+                    {
+                        <option value="@item.Id">@item.UserName</option>
+
+                    }
+
+                </select>
+                <br />
+                <br />
+                <button class="btn btn-success" type="submit" style="position:center">Adauga membrul</button>
+
+            </div>
+
+        </form>
+    </div>
+}
+
+
+
+
+
+<br />
+
+<br />
+<br />
+<div class="membr_proj">
+    <div class="membr">
+        @if (ViewBag.Members != null)
+        {
+            <h4 class="title text-center">Membrii Echipei</h4>
+            @foreach (var member in ViewBag.Members)
+            {
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>@member.UserName</b></h5>
+                        <br />
+                        @if (ViewBag.Team.UserId == ViewBag.AppUserId || User.IsInRole("Admin"))
+                        {
+                            <form method="post" action="/TeamMembers/Delete/?userId=@member.Id&teamId=@ViewBag.Team.TeamId">
+                                <button class="btn btn-danger" type="submit">Stergere</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+                @*<div class="item1">
         <p><b>@member.UserName</b></p>
 
 
         <form method="post" action="/TeamMembers/Delete/?teamId=@ViewBag.TeamId&userId=@member.Id">
-            <button class="btn btn-danger" type="submit">Stergere</button>
+        <button class="btn btn-danger" type="submit">Stergere</button>
         </form>
-        <br />
-        <hr />
-        <br />
-    }
-}
+        </div>*@
+            }
+        }
+    </div>
 
-@if (ViewBag.Projects != null)
-{
-    @foreach (var project in ViewBag.Projects)
-    {
+    <div class="proj">
+        @if (ViewBag.Projects != null)
+        {
+            <h4 class="title text-center">Proiectele Echipei</h4>
+            @foreach (var project in ViewBag.Projects)
+            {
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>@project.Name</b></h5>
+                        <p>@project.Description</p>
+                        <a class="btn btn-primary" href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
+                    </div>
+                </div>
+                @*<div class="item2">
         <p><b>@project.Name</b></p>
         <p>@project.Description</p>
         <a class="btn btn-primary" href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
-        <br />
-        <hr />
-        <br />
-    }
-}
+        </div>*@
+            }
+        }
+    </div>
+
+
+</div>

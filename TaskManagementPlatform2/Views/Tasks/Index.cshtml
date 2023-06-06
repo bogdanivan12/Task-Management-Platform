@@ -1,5 +1,64 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<style>
+    .taskuri {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .card {
+        margin: auto;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        height: 250px;
+        width: 500px;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .container {
+        padding: 2px 30px;
+    }
+</style>
+
+<body>
+    <h2>Lista task-uri</h2>
+    <br />
+    <br />
+    <div class="taskuri">
+        @foreach (var task in ViewBag.Tasks)
+        {
+            <div class="card text-center">
+                <div class="row">
+                    <div class="col-md-2"></div>
+
+                    <div class="col-md-8">
+
+                        <div>
+                            <a href="/Tasks/Show/@task.TaskId" class="btn" style="font-size:23px"><b>@task.Name</b></a>
+                            <p>@task.Description</p>
+                            <button class="btn" style="background-color:@task.Status.Color">@task.Status.Name</button>
+                             
+                            <br />
+                            <br />
+                            <footer class="blockquote-footer"><small>Start Date: @task.Date</small></footer>
+                            <footer class="blockquote-footer"> <small>Deadline: @task.Deadline</small></footer>
+                            @*<span>@task.Date</span>
+                        <span>@task.Deadline</span>*@
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-md-2"></div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+</body>

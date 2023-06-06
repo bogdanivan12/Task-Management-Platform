@@ -30,6 +30,6 @@ namespace TaskManagementPlatform2.Models
         public string? UserId { get; set; }
         public virtual ApplicationUser? User { get; set; }
 
-        public virtual ICollection<TeamMember>? Members { get; set; }
+        public virtual ICollection<TaskMember>? Members { get; set; }
     }
 }

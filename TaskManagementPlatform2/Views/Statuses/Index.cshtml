@@ -8,18 +8,60 @@
 <br />
 <br />
 
-@foreach (var status in ViewBag.Statuses)
-{
-    <p>@status.Name</p>
+<style>
+    .statuses {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .card {
+        margin: auto;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        height: 150px;
+        width: 300px;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .container {
+        padding: 2px 30px;
+    }
+</style>
+<div class="statuses">
+    @foreach (var status in ViewBag.Statuses)
+    {
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title" style="font-size: 23px">@status.Name</h5>
+                <button class="btn" style="background-color:@status.Color"></button>
+
+                @if (status.UserId == ViewBag.AppUserId || User.IsInRole("Admin"))
+                {
+                    <a class="btn" href="/Statuses/Edit/@status.StatusId">Editare</a>
+                    <form method="post" action="/Statuses/Delete/@status.StatusId">
+                        <button class="btn" type="submit">Stergere</button>
+                    </form>
+                }
+            </div>
+        </div>
+        @*<p>@status.Name</p>
     <button class="btn" style="background-color:@status.Color"></button>
     <a class="btn" href="/Statuses/Edit/@status.StatusId">Editare</a>
     <form method="post" action="/Statuses/Delete/@status.StatusId">
-        <button class="btn" type="submit">Stergere</button>    
-    </form>
-    <br />
+    <button class="btn" type="submit">Stergere</button>
+    </form>*@
+        @*<br />
     <hr />
-    <br />
-}
+    <br />*@
+    }
+</div>
+
 <br />
 <a class="btn btn-success" href="/Statuses/New">Adauga un nou status</a>
 <br />

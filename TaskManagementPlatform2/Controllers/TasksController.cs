@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementPlatform2.Data;
 using TaskManagementPlatform2.Models;
@@ -8,17 +9,41 @@ namespace TaskManagementPlatform2.Controllers
     public class TasksController : Controller
     {
         private readonly ApplicationDbContext db;
-        public TasksController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public TasksController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        public IActionResult Index()
+        {
+            if (User.IsInRole("Admin"))
+            {
+                var tasks = db.Tasks.Include("Status");
+                ViewBag.Tasks = tasks;
+            }
+            else
+            {
+                var tasks = from task in db.Tasks
+                            join taskMember in db.TaskMembers on task.TaskId equals taskMember.TaskId
+                            where taskMember.UserId == _userManager.GetUserId(User)
+                            select task;
+                ViewBag.Tasks = tasks.Concat(from task in db.Tasks
+                                             where task.UserId == _userManager.GetUserId(User)
+                                             select task).Distinct().Include("Status").OrderBy(t => t.Deadline);
+            }
+            return View();
         }
 
         [HttpPost]
         public IActionResult New(Models.Task task)
         {
             task.Date = DateTime.Now;
-            task.Deadline = DateTime.Now;
-
+            //task.Deadline = DateTime.Now;
+            task.UserId = _userManager.GetUserId(User);
             try
             {
                 db.Tasks.Add(task);
@@ -47,6 +72,8 @@ namespace TaskManagementPlatform2.Controllers
             var statuses = from status in db.Statuses
                            orderby status.Name
                            select status;
+
+            ViewBag.AppUserId = _userManager.GetUserId(User);
 
             ViewBag.Statuses = statuses;
             ViewBag.Task = task;
@@ -82,11 +109,17 @@ namespace TaskManagementPlatform2.Controllers
         }
         public IActionResult Show(int id)
         {
-            Models.Task task = db.Tasks.Include("Status").Include("Comments")//.Include("Statuses")
+            ViewBag.AppUserId = _userManager.GetUserId(User);
+
+            Models.Task task = db.Tasks.Include("Status")//.Include("Comments")//.Include("Statuses")
                                .Where(pro => pro.TaskId == id)
                                .First();
 
             ViewBag.Task = task;
+
+            var comments = db.Comments.Include("User")
+                .Where(com => com.TaskId == id);
+            ViewBag.Comments = comments;
 
             //var statuses = from status in db.Statuses
             //               orderby status.Name

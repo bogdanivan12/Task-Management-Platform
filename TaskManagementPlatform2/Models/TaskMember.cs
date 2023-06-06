@@ -11,6 +11,6 @@ namespace TaskManagementPlatform2.Models
 
         public virtual ApplicationUser? User { get; set; }
 
-        public virtual Task? Team { get; set; }
+        public virtual Task? Task { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementPlatform2.Data;
 using TaskManagementPlatform2.Models;
 
@@ -7,9 +8,13 @@ namespace TaskManagementPlatform2.Controllers
     public class StatusesController : Controller
     {
         private readonly ApplicationDbContext db;
-        public StatusesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public StatusesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -31,6 +36,7 @@ namespace TaskManagementPlatform2.Controllers
         {
             try
             {
+                s.UserId = _userManager.GetUserId(User);
                 db.Statuses.Add(s);
                 db.SaveChanges();
                 return RedirectToAction("Index");

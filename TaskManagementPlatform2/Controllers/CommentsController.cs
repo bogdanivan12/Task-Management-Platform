@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementPlatform2.Data;
 using TaskManagementPlatform2.Models;
 
@@ -7,9 +8,13 @@ namespace TaskManagementPlatform2.Controllers
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext db;
-        public CommentsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public CommentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
@@ -19,7 +24,7 @@ namespace TaskManagementPlatform2.Controllers
         public IActionResult New(Comment comm)
         {
             comm.Date = DateTime.Now;
-
+            comm.UserId = _userManager.GetUserId(User);
             try
             {
                 db.Comments.Add(comm);

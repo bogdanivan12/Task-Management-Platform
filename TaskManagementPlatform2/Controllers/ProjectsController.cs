@@ -32,17 +32,21 @@ namespace TaskManagementPlatform2.Controllers
             else
             {
                 var projects = from project in db.Projects
-                               orderby project.Deadline
-                               where project.UserId == _userManager.GetUserId(User)
+                               join t in db.Teams on project.TeamId equals t.TeamId
+                               join tm in db.TeamMembers on t.TeamId equals tm.TeamId
+                               where tm.UserId == _userManager.GetUserId(User)
                                select project;
 
-                ViewBag.Projects = projects;
+                ViewBag.Projects = projects.Concat(from project in db.Projects
+                                                   where project.UserId == _userManager.GetUserId(User)
+                                                   select project).Distinct().OrderBy(p => p.Deadline);
             }
             return View();
         }
 
         public IActionResult Show(int id)
         {
+            ViewBag.AppUserId = _userManager.GetUserId(User);
             Project project = db.Projects.Include("Tasks")//.Include("Statuses")
                                .Where(pro => pro.ProjectId == id)
                                .First();
@@ -64,6 +68,7 @@ namespace TaskManagementPlatform2.Controllers
         public IActionResult New()
         {
             var teams = from team in db.Teams
+                        where team.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")
                         orderby team.Name
                         select team;
 

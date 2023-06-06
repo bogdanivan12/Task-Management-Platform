@@ -7,31 +7,65 @@
 
 <br />
 <br />
+<style>
+    .teams {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
 
-@foreach (var team in ViewBag.Teams)
-{
-    <p>@team.Name</p>
+    .card {
+        margin: auto;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        height: 150px;
+        width: 300px;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .container {
+        padding: 2px 30px;
+    }
+</style>
+<div class="teams">
+
+
+    @foreach (var team in ViewBag.Teams)
+    {
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title" style="font-size: 23px">@team.Name</h5>
+                <a href="/Teams/Show/@team.TeamId " class="btn btn-primary" role="button">Vizualizare echipa</a>
+            </div>
+        </div>
+        @*<p>@team.Name</p>
     @if (team.Projects != null)
     {
 
-        @foreach (var project in team.Projects)
-        {
-            <p>@project.Name</p>
-            <p>@project.Description</p>
-            <a href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
-            <br />
-            <hr />
-            <br />
-        }
-
+    @foreach (var project in team.Projects)
+    {
+    <p>@project.Name</p>
+    <p>@project.Description</p>
+    <a href="/Projects/Show/@project.ProjectId">Afisare proiect</a>
+    <br />
+    <hr />
+    <br />
     }
 
-    <a class="btn" href="/Teams/Show/@team.TeamId">Vizualizare echipa</a>
+    }*@
+
+        @*<a class="btn" href="/Teams/Show/@team.TeamId">Vizualizare echipa</a>
     <br />
     <hr />
     <hr />
-    <br />
-}
+    <br />*@
+    }
+</div>
 <br />
 <a class="btn btn-success" href="/Teams/New">Adauga o noua echipa</a>
 <br />

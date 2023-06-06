@@ -13,21 +13,22 @@
 
 <form method="post" action="/Projects/New">
     <label>Titlu Proiect</label>
-    <input type="text" name="Name" required/>
+    <input type="text" name="Name" required />
     <br />
     <br />
 
     <label>Descriere Proiect</label>
-    <textarea name="Description"></textarea>
+    <textarea name="Description" required></textarea>
     <br />
     <br />
 
-    <input type="hidden" name="Date" value="@DateTime.Now" />
+    <input type="hidden" name="Date" value="@DateTime.Now" required />
     <br />
 
-    <input type="hidden" name="Deadline" value="@DateTime.Now" />
+    @*<input type="hidden" name="Deadline" value="@DateTime.Now" />*@
+    <input type="date" name="Deadline" min="2023-06-07" max="2030-01-01" required>
     <br />
-
+    <br />
     <label>Selectati echipa</label>
 
     @*
@@ -35,7 +36,7 @@
     se paseaza catre Controller prin post
     Proprietatea value are id-ul categoriei si valoarea care se afiseaza in dropdown (numele categoriei)
     *@
-
+    <br />
     <select name="TeamId" required>
 
         @foreach (var item in ViewBag.Teams)
@@ -43,7 +44,11 @@
             <option value="@item.TeamId">@item.Name</option>
         }
 
+
+
+
     </select>
+    <br />
     <br />
     <button class="btn btn-success" type="submit">Adauga Proiect</button>
 

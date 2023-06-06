@@ -18,13 +18,28 @@ namespace TaskManagementPlatform2.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Admin")]
         public IActionResult Index()
         {
-            var teams = from team in db.Teams
-                        orderby team.Name
-                        select team;
-            ViewBag.Teams = teams;
+            if (User.IsInRole("Admin"))
+            {
+                var teams = from team in db.Teams
+                            orderby team.Name
+                            select team;
+
+                ViewBag.Teams = teams;
+            }
+            else
+            {
+                var teams = from team in db.Teams
+                            join teamMember in db.TeamMembers on team.TeamId equals teamMember.TeamId
+                            where teamMember.UserId == _userManager.GetUserId(User)
+                            select team;
+                ViewBag.Teams = teams.Concat(from team in db.Teams
+                                             where team.UserId == _userManager.GetUserId(User)
+                                             select team).Distinct().OrderBy(t => t.Name);
+            }
+            
             return View();
         }
 
@@ -38,6 +53,7 @@ namespace TaskManagementPlatform2.Controllers
         {
             try
             {
+                t.UserId = _userManager.GetUserId(User);
                 db.Teams.Add(t);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -50,6 +66,8 @@ namespace TaskManagementPlatform2.Controllers
 
         public IActionResult Show(int id)
         {
+            ViewBag.AppUserId = _userManager.GetUserId(User);
+
             Team team = db.Teams.Find(id);
             ViewBag.Team = team;
             ViewBag.TeamId = team.TeamId;
